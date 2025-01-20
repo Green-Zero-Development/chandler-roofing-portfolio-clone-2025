@@ -1,0 +1,10 @@
+<div class="pre-footer-section">
+    <div class="wrapper">
+        <img class="bg-img" src="{{ .secData.acf.background_image.url }}" alt="{{ .secData.acf.background_image.alt }}" />
+        <div class="overlay"></div>
+        <div class="content">
+            <h5>{{ .secData.acf.title }}</h5>
+            <a class="outline-button" href="{{ partial "global/button_link.html" (dict "button" .secData.acf.button ) | safeURL }}">{{ .secData.acf.button.text }}</a>
+        </div>
+    </div>
+</div>

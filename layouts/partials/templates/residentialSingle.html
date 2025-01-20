@@ -1,0 +1,213 @@
+<!-- #region Data -->
+ 
+{{ $commercialProjects := slice }}
+{{ $residentialProjects := slice }}
+
+{{ range where site.Pages "Type" "projects" }}
+    {{ $categories := .Params.categories }}
+
+    <!-- Check if the project is Commercial -->
+    {{ if in $categories "Commercial" }}
+        {{ $commercialProjects = $commercialProjects | append . }}
+    {{ end }}
+
+    <!-- Check if the project is Residential -->
+    {{ if in $categories "Residential" }}
+        {{ $residentialProjects = $residentialProjects | append . }}
+    {{ end }}
+{{ end }}
+
+<!-- #endregion -->
+
+<main id="main-content" role="main" class="child-service-wrapper">
+
+    <div class="hero">
+        <div class="residential-hero">
+            <img class="bk-img" src="{{ .acf.hero.image.url }}" alt="{{ .acf.hero.image.alt }}" />
+            <div class="overlay overlay-light"></div>
+            <div class="wrapper">
+                <div class="content">
+                    <h5>{{ .acf.hero.subtitle }}</h5>
+                    <h1>{{ .acf.hero.title }}</h1>
+                    <p>{{ .acf.hero.paragraph }}</p>
+                    <a href="{{ partial "global/button_link.html" (dict "button" .acf.hero.button ) | safeURL }}">
+                        <div class="filled-button">{{ .acf.hero.button.text }}</div>
+                    </a>
+                </div>
+                <div class="image">
+                    <img src="{{ .acf.hero.image.url }}" alt="{{ .acf.hero.image.alt }}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="padding"></div>
+        <div class="html-content wrapper">
+            {{ .acf.first_content_block | safeHTML }}
+        </div>
+    </div>
+
+    {{ if .acf.page_images }}
+
+    <div class="page-images">
+        <div class="wrapper">
+            {{ range $index, $item := .acf.page_images }}
+                <div class="image">
+                    <img src="{{ .url }}" alt="{{ .alt }}" />
+                </div>
+            {{ end }}
+        </div>
+    </div>
+
+    {{ end }}
+
+    {{ if .acf.second_content_block }}
+
+    <div class="content-section">
+        <div class="padding"></div>
+        <div class="html-content wrapper">
+            {{ .acf.second_content_block | safeHTML }}
+        </div>
+    </div>
+
+    {{ end }}
+
+    {{ if .acf.page_images_two }}
+
+    <div class="page-images">
+        <div class="wrapper">
+            {{ range $index, $item := .acf.page_images_two }}
+                <div class="image">
+                    <Image src="{{ .url }}" alt="{{ .alt }}" />
+                </div>
+            {{ end }}
+        </div>
+    </div>
+
+    {{ end }}
+
+    <div x-data="{ projectFilterBox: false, projectFilter: 'div1' }" class="project-showcase">
+        <div class="title-section">
+            <h2>Related Projects</h2>
+    
+            <!-- Filter Wrapper -->
+            <div class="filter-wrapper">
+                <a class="filled-button" href="">
+                    view more
+                </a>
+            </div>
+        </div>
+  
+        <!-- Desktop Projects Section -->
+        <div class="desktop-projects">
+            <!-- Residential Projects (Filtered) -->
+            <template x-if="projectFilter === 'div1'">
+                <div class="projects-group">
+                    {{ range $index, $item := $residentialProjects }}
+                        {{ if eq $index 0 }}
+                            <a href="{{ .Permalink }}" class="highlight project-box">
+                                <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                <div class="hover">
+                                    {{ range first 1 .Params.acf.images }}
+                                        <img src="{{ .url }}" alt="{{ .alt }}" />
+                                    {{ end }}
+                                    <div class="overlay"></div>
+                                    <div class="title">
+                                        <h2>{{ .Params.acf.hero.title }}</h2>
+                                    </div>
+                                </div>
+                            </a>
+                        {{ end }}
+                        {{ if eq $index 1 }}
+                            <a href="{{ .Permalink }}" class="highlight-secondary project-box">
+                                <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                <div class="hover">
+                                    {{ range first 1 .Params.acf.images }}
+                                        <img src="{{ .url }}" alt="{{ .alt }}" />
+                                    {{ end }}
+                                    <div class="overlay"></div>
+                                    <div class="title">
+                                        <h2>{{ .Params.acf.hero.title }}</h2>
+                                    </div>
+                                </div>
+                            </a>
+                        {{ end }}
+                        {{ if eq $index 2 }}
+                            <a href="{{ .Permalink }}" class="highlight-third project-box">
+                                <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                <div class="hover">
+                                    {{ range first 1 .Params.acf.images }}
+                                        <img src="{{ .url }}" alt="{{ .alt }}" />
+                                    {{ end }}
+                                    <div class="overlay"></div>
+                                    <div class="title">
+                                        <h2>{{ .Params.acf.hero.title }}</h2>
+                                    </div>
+                                </div>
+                            </a>
+                        {{ end }}
+                    {{ end }}
+                </div>
+            </template>
+        </div>
+  
+        <!-- Mobile Projects Section -->
+        <div class="mobile-projects">
+            <template x-if="projectFilter === 'div1'">
+                <section
+                    x-data="{
+                        init() {
+                            new Splide(this.$refs.splide, {
+                                type: 'slide',
+                                perPage: 1,
+                                arrows: false,
+                                pagination: false,
+                                rewind: false,
+                                noDrag: true,
+                                keyboard: 'global',
+                                padding: '30px',
+                                gap: '10px',
+                                breakpoints: {
+                                    416: {},
+                                    516: {},
+                                    768: {}
+                                }
+                            }).mount()
+                        },
+                    }"
+                    x-ref="splide"
+                    class="splide"
+                    aria-label="Splide/Alpine.js Carousel Example"
+                >
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            {{ range $index, $item := $residentialProjects }}
+                                <li class="splide__slide">
+                                    <a href="{{ .Permalink }}" class="box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </section>
+            </template>
+            <a class="filled-button" href="/">
+                view more
+            </a>
+        </div>            
+    </div>
+
+    {{ partial "global/scheduleEstimateCta.html" (dict "section_data" (index .global_sections "Schedule Estimate CTA") "addresses" (index .site_data "Physical Addresses") "phones" (index .site_data "Contact Numbers") "emails" (index .site_data "Emails"))  }}
+
+</main>

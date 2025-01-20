@@ -1,0 +1,102 @@
+<main id="main-content" role="main" class="top-level-service-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <img src="{{ .acf.hero.background_image.url }}" alt="{{ .acf.hero.background_image.alt }}" />
+            <div class="overlay-dark"></div>
+            <div class="wrapper">
+                <div class="content">
+                    <h2>{{ .acf.hero.subtitle }}</h2>
+                    <h1>{{ .acf.hero.title }}</h1>
+                    <p>{{ .acf.hero.paragraph }}</p>
+                    <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.hero.button ) | safeURL }}">
+                        {{ .acf.hero.button.text }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-hero">
+        <div class="wrapper comm-wrapper">
+            {{ range $index, $item := .acf.post_hero_box }}
+                <a class="link-box" href="{{ .link }}">
+                    <h3>
+                        {{ .title }}
+                        <svg width="25" height="17" viewBox="0 0 25 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.0861 0.285156L14.7509 1.62977L20.4157 7.33441H0.0302734V9.23602L20.4155 9.23608L14.7509 14.9405L16.0861 16.2852L24.0303 8.28516L16.0861 0.285156Z" fill="white"/>
+                        </svg>
+                    </h3>
+                    <p>{{ .paragraph }}</p>
+                </a>
+            {{ end }}
+        </div>
+    </div>
+
+    <div class="services-list">
+        <div class="wrapper">
+            <div class="box">
+                <h2>{{ .acf.services.title }}</h2>
+                <div class="content">
+                    <p class="page-p">{{ .acf.services.paragraph }}</p>
+                    <div class="services-list">
+                        {{ range $index, $item := .acf.services.Service }}
+                            <a href="{{ .link }}">
+                                <h3>
+                                    {{ .title }}
+                                    <svg width="25" height="17" viewBox="0 0 25 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.0861 0.285156L14.7509 1.62977L20.4157 7.33441H0.0302734V9.23602L20.4155 9.23608L14.7509 14.9405L16.0861 16.2852L24.0303 8.28516L16.0861 0.285156Z" fill="#D12127"/>
+                                    </svg>
+                                </h3>
+                                <p>{{ .paragraph }}</p>
+                            </a>
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ partial "global/testimonialSection.html" (dict "testimonials" (index .global_sections "Testimonials Slider"))  }}
+
+    <div class="why-us">
+        <div class="wrapper">
+            <div class="image">
+                <img src="{{ .acf.why_us.image.url }}" alt="{{ .acf.why_us.image.alt }}" />
+            </div>
+            <div class="content">
+                <h2>{{ .acf.why_us.title }}</h2>
+                <ul>
+                    {{ range $index, $item := .acf.why_us.info_box }}
+                        <li>
+                            <div class="li-content">
+                                <h4>{{ .title }}</h4>
+                                <p>{{ .paragraph }}</p>
+                            </div>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="projects-cta">
+        <div class="wrapper">
+            <div class="content">
+                <h5>{{ .acf.projects.subtitle }}</h5>
+                <h4>{{ .acf.projects.title }}</h4>
+                <p>{{ .acf.projects.paragraph }}</p>
+                <div class="buttons">
+                    <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.projects.filled_button ) | safeURL }}">
+                        {{ .acf.projects.filled_button.text }}
+                    </a>
+                    <a class="dark-outline-button" href="{{ partial "global/button_link.html" (dict "button" .acf.projects.outline_button ) | safeURL }}">{{ .acf.projects.outline_button.text }}</a>
+                </div>
+            </div>
+            <div class="image">
+                <img src="{{ .acf.projects.image.url }}" alt="{{ .acf.projects.image.alt }}" />
+            </div>
+        </div>
+    </div>
+
+</main>

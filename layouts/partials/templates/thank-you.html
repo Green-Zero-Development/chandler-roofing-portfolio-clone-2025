@@ -1,0 +1,13 @@
+<main id="main-content" role="main" class="thank-you-wrapper">
+
+    <div class="content">
+        <div class="wrapper">
+          <h1>{{ .acf.hero_section.title }}</h1>
+          <p>{{ .acf.hero_section.description }}</p>
+          <a href="{{ partial "global/button_link.html" (dict "button" .acf.hero_section.button ) | safeURL }}">
+              <div class="filled-button">{{ .acf.hero_section.button.text }}</div>
+          </a>
+        </div>
+    </div>
+
+</main>

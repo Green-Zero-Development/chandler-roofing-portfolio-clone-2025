@@ -1,0 +1,36 @@
+{{ define "main" }}
+
+{{ partial "global/head.html" (dict "seo" .Params.acf.seo) }}
+{{ partial "global/header.html" (dict "seo" .Params.acf.seo "logos" (index .Params.site_data "Logos") "menus" .Params.menus)  }}
+
+{{ if eq .Params.template "templates/thank-you.php" }}
+    {{ partial "templates/thank-you.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data))  }}
+{{ else if eq .Params.template "templates/about.php" }}
+    {{ partial "templates/about.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data))  }}
+{{ else if eq .Params.template "templates/residential.php" }}
+    {{ partial "templates/residential.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections)) }}
+{{ else if eq .Params.template "templates/commercial.php" }}
+    {{ partial "templates/commercial.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections)) }}
+{{ else if eq .Params.template "templates/project-listing.php" }}
+    {{ partial "templates/projectListing.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections)) }}
+{{ else if eq .Params.template "templates/financing.php" }}
+    {{ partial "templates/financing.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections)) }}
+{{ else if eq .Params.template "templates/contact.php" }}
+    {{ partial "templates/contact.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "addresses" (index .Params.site_data "Physical Addresses") "phones" (index .Params.site_data "Contact Numbers") "emails" (index .Params.site_data "Emails")) }}
+{{ else if eq .Params.template "templates/blog-listing.php" }}
+    {{ partial "templates/blogListing.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections)) }}
+{{ else if eq .Params.template "templates/testimonies.php" }}
+    {{ partial "templates/testimonies.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data)) }}
+{{ else if eq .Params.template "templates/service-area-listing.php" }}
+    {{ partial "templates/serviceAreaListing.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data)) }}
+{{ else if eq .Params.template "templates/policy.php" }}
+    {{ partial "templates/policy.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data))  }}
+{{ else }}
+    
+{{ end }}
+
+{{ partial "global/preFooter.html" (dict "secData" (index .Params.global_sections "Prefooter"))  }}
+
+{{ partial "global/footer.html" (dict "logos" (index .Params.site_data "Logos") "addresses" (index .Params.site_data "Physical Addresses") "phones" (index .Params.site_data "Contact Numbers") "emails" (index .Params.site_data "Emails") "socials" (index .Params.site_data "Social Media Links") "menus" .Params.menus)  }}
+
+{{ end }}

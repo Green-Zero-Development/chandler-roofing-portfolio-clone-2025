@@ -1,0 +1,124 @@
+<main id="main-content" role="main" class="financing-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.hero.subtitle }}</h4>
+            <h1>{{ .acf.hero.title }}</h1>
+            <p>{{ .acf.hero.paragraph }}</p>
+        </div>
+    </div>
+
+    <div class="why-us">
+        <div class="wrapper">
+            <div class="image">
+                <img src="{{ .acf.payment_options.image.url }}" alt="{{ .acf.payment_options.image.alt }}" />
+            </div>
+            <div class="content">
+                <h2>{{ .acf.payment_options.title }}</h2>
+                <ul>
+                    {{ range $index, $item := .acf.payment_options.info_box }}
+                        <li>
+                            <div class="li-content">
+                                <h4>{{ .title }}</h4>
+                                <p>{{ .paragraph }}</p>
+                            </div>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="benefits">
+        <div class="wrapper">
+            <h2>{{ .acf.benefits.title }}</h2>
+            <ul>
+                {{ range $index, $item := .acf.benefits.icon_box }}
+                    <li>
+                        <img src="{{ .icon.url }}" alt="{{ .icon.alt }}" width="62px" height="55px" />
+                        <h4>{{ .title }}</h4>
+                        <p>{{ .paragraph }}</p>
+                    </li>
+                {{ end }}
+            </ul>
+        </div>
+    </div>
+
+    {{ partial "global/testimonialSection.html" (dict "testimonials" (index .global_sections "Testimonials Slider"))  }}
+
+    <div class="faqs">
+        <div class="wrapper">
+            <div class="content">
+                <h2>{{ .acf.faqs_section.title }}</h2>
+                <p>{{ .acf.faqs_section.paragraph }}</p>
+                <a class="red-outline-button" href="{{ partial "global/button_link.html" (dict "button" .acf.faqs_section.button ) | safeURL }}">
+                    {{ .acf.faqs_section.button.text }}
+                </a>
+            </div>
+            <ul>
+                {{ range $index, $item := .acf.faqs_section.faq }}
+                    <li>
+                        <details>
+                            <summary>
+                                {{ .question }}
+                                <svg class="" width="32px" height="33px" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5283 20.919C16.2354 21.2119 15.7606 21.2119 15.4677 20.919L7.82123 13.2725C7.52834 12.9796 7.52834 12.5048 7.82123 12.2119L8.17479 11.8583C8.46768 11.5654 8.94255 11.5654 9.23545 11.8583L15.998 18.6209L22.7606 11.8583C23.0535 11.5654 23.5283 11.5654 23.8212 11.8583L24.1748 12.2119C24.4677 12.5048 24.4677 12.9796 24.1748 13.2725L16.5283 20.919Z" fill="black"/>
+                                </svg>
+                            </summary>
+                            <p>{{ .answer }}</p>
+                        </details>
+                    </li>
+                {{ end }}
+            </ul>
+        </div>
+    </div>
+
+    <div class="blog-listing">
+        <div class="wrapper">
+            <div class="title-section">
+                <h2>Recent Blog Posts</h2>
+                <a class="filled-button" href="/blog/">View more</a>
+            </div>
+            <div class="post-wrapper">
+                {{ range $index, $item := sort (where site.RegularPages "Type" "blog") ".Params.modified" "desc" }}
+                    {{ if lt $index 2 }}
+                        <div class="project">
+                            <div class="image">
+                                <img src="{{ .Params.acf.featured_image.url }}" alt="{{ .Params.acf.featured_image.alt }}" />
+                            </div>
+                            <ul class="tags">
+                                {{ range $index, $item := .Params.categories }}
+                                    <li class="tag">
+                                        {{ . }}
+                                    </li>
+                                {{ end }}
+                            </ul>
+                            <h4>{{ .Params.title }}</h4>
+                            <a href="{{ .Permalink }}" class="text-button">
+                                View Full Post
+                            </a>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            </div>
+        </div>
+    </div>
+
+    <div class="pre-qualified">
+        <div class="wrapper">
+            <div class="content">
+                <h2>{{ .acf.prequalified.title }}</h2>
+                <p>{{ .acf.prequalified.paragraph }}</p>
+            </div>
+            <div class="cognito">
+                <script src="https://services.cognitoforms.com/s/IG83lPQs7UKU2FDeP--HlA"></script>
+                <script>Cognito.load("forms", { id: "81" });</script>
+                <div class="preloader">
+                    <h6>Hold on... We're loading the form!</h6>
+                    <button id="loadFormBackupButton" class="button">Click here if the form never loads.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>

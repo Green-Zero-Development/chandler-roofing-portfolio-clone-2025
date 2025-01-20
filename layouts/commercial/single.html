@@ -1,0 +1,12 @@
+{{ define "main" }}
+
+{{ partial "global/head.html" (dict "seo" .Params.acf.seo) }}
+{{ partial "global/header.html" (dict "seo" .Params.acf.seo "logos" (index .Params.site_data "Logos") "menus" .Params.menus)  }}
+
+{{ partial "templates/commercialSingle.html" (dict "acf" (.Params.acf) "global_sections" (.Params.global_sections) "site_data" (.Params.site_data))  }}
+
+{{ partial "global/preFooter.html" (dict "secData" (index .Params.global_sections "Prefooter"))  }}
+
+{{ partial "global/footer.html" (dict "logos" (index .Params.site_data "Logos") "addresses" (index .Params.site_data "Physical Addresses") "phones" (index .Params.site_data "Contact Numbers") "emails" (index .Params.site_data "Emails") "socials" (index .Params.site_data "Social Media Links") "menus" .Params.menus)  }}
+
+{{ end }}

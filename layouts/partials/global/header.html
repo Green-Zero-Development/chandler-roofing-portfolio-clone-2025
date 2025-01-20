@@ -1,0 +1,211 @@
+{{ $sortedMenus := sort .menus ".position" }}
+
+<header 
+    id="header"
+    class="header"
+    x-data="{ isSticky: false, hasOverlayDark: false, hasOverlayLight: false, isMenuOpen: false }" 
+    :class="{ 'sticky-header': isSticky }"
+    x-init="
+    // Check for sticky-header state on page load
+    isSticky = sessionStorage.getItem('isSticky') === 'true';
+    if (window.scrollY > 50) isSticky = true;
+    
+    // Listen for scroll events and update sticky state
+    window.addEventListener('scroll', () => {
+        isSticky = window.scrollY > 50;
+        if (isSticky) {
+            sessionStorage.setItem('isSticky', 'true');
+        } else {
+            sessionStorage.removeItem('isSticky');
+        }
+    });
+
+    // Check for .overlay-dark or .overlay-light and set flags
+    if (document.querySelector('.overlay-dark')) {
+        hasOverlayDark = true;
+    } else if (document.querySelector('.overlay-light')) {
+        hasOverlayLight = true;
+    }
+
+    // Handle logo visibility based on overlay detection
+    if (hasOverlayDark) {
+        $refs.lightLogo.classList.remove('hidden');
+        $refs.lightLogo.classList.add('visible');
+        $refs.darkLogo.classList.remove('visible');
+        $refs.darkLogo.classList.add('hidden');
+    } else if (hasOverlayLight) {
+        $refs.darkLogo.classList.remove('hidden');
+        $refs.darkLogo.classList.add('visible');
+        $refs.lightLogo.classList.remove('visible');
+        $refs.lightLogo.classList.add('hidden');
+    }
+    "
+>
+    <div class="header-wrapper" :class="{ 'transparent-header': hasOverlayDark, 'colored-header': hasOverlayLight }">
+        <div class="desktop-logo-link" href="/" DesktopLogoLink>
+            <a href="/" x-ref="lightLogo" class="light-logo" :class="{ 'visible': isSticky }">
+                <img src="{{ .logos.acf.light_logo.url }}" alt="{{ .logos.acf.light_logo.alt }}" width="250px" height="58px" />
+            </a>
+            <a href="/" x-ref="darkLogo" class="dark-logo" :class="{ 'hidden-important': isSticky }">
+                <img src="{{ .logos.acf.dark_logo.url }}" alt="{{ .logos.acf.dark_logo.alt }}" width="250px" height="58px" />
+            </a>
+        </div>
+        <nav class="main-navi" MainNavi>
+            <ul class="navi">
+                <li class="sr-only">
+                    <span class="current">
+                        <span>Current Page: </span>
+                        {{ .seo.meta_title }}
+                    </span>
+                </li>
+                {{ range $sortedMenus }}
+                    {{ if eq .menu "main-menu" }}
+                        {{ if .children }}
+                            <li x-data="{ open: false }" class="top-level-li" @mouseenter="open = true" @mouseleave="open = false">
+                                <a href="{{ .url }}"
+                                :aria-expanded="open.toString()" 
+                                :aria-controls="'dropdown-' + $id"
+                                class="dropdown-trigger"
+                                >
+                                    {{ .title }}
+                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="Base/CaretDown">
+                                            <path id="Vector" d="M13.1992 6.20898L8.19922 11.209L3.19922 6.20898" stroke="#082019" stroke-opacity="0.8" stroke-width="1.5" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+                                </a>
+                                <ul class="dropdown"
+                                    x-show="open"
+                                    :id="'dropdown-' + $id"
+                                    style="display: none;"
+                                    x-transition>
+                                    {{ $sortedChildMenus := sort .children ".position" }}
+                                    {{ range $sortedChildMenus }}
+                                        <li>
+                                            <a href="{{ .url }}">{{ .title }}</a>
+                                        </li>
+                                    {{ end }}
+                                </ul>
+                            </li>
+                        {{ else }}
+                            <li class="standalone-li top-level-li">
+                                <a href="{{ .url }}">{{ .title }}</a>
+                            </li>
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+
+                <a href="#main-content" class="sr-only">Skip to main content</a>
+            </ul>
+        </nav>
+        <nav 
+            id="mobile-menu" 
+            class="mobile-menu"
+            :class="{ 'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen }"
+        >
+            <div id="mobile-items" class="mobile-items">
+                <div class="mobile-menu-header">
+                    <div class="desktop-logo-link" DesktopLogoLink>
+                        <a href="/">
+                            <img src="{{ .logos.acf.light_logo.url }}" alt="{{ .logos.acf.light_logo.alt }}" width="192px" height="68px" />
+                        </a>
+                    </div>
+                </div>
+                <ul>
+                    {{ range $sortedMenus }}
+                        {{ if eq .menu "main-menu" }}
+                            {{ if .children }}
+                                <li x-data="{ open: false }">
+                                    <div href="{{ .url }}"
+                                    :aria-expanded="open.toString()" 
+                                    :aria-controls="'dropdown-' + $id"
+                                    @click="open = !open"
+                                    class="dropdown-trigger">
+                                        {{ .title }}
+                                        <svg className="arrow" width="10" height="6" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" :class="{ 'dropdown-arrow-toggle': open }">
+                                            <path d="M1 1.28516L5 5.28516L9 1.28516" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <ul class="mobile-dropdown"
+                                        x-show="open"
+                                        :id="'dropdown-' + $id"
+                                        style="display: none;">
+                                        {{ $sortedChildMenus := sort .children ".position" }}
+                                        {{ range $sortedChildMenus }}
+                                            <li class="child-li">
+                                                <a href="{{ .url }}">{{ .title }}</a>
+                                            </li>
+                                        {{ end }}
+                                    </ul>
+                                </li>
+                            {{ else }}
+                                <li class="standalone-li">
+                                    <a href="{{ .url }}">{{ .title }}</a>
+                                </li>
+                            {{ end }}
+                        {{ end }}
+                    {{ end }}
+                    <li class="sr-only">
+                        <span class="current">
+                            <span>Current Page: </span>
+                            {{ .seo.meta_title }}
+                        </span>
+                    </li>
+                    <a href="#main-content" class="sr-only">Skip to main content</a>
+                </ul>
+                <div class="social">
+                    <a href="" FACEBOOK>
+                        <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38.3763 21.4289C38.3763 11.7514 30.5789 3.90625 20.9601 3.90625C11.3413 3.90625 3.54382 11.7514 3.54382 21.4289C3.54382 30.1748 9.91267 37.4242 18.2388 38.7388V26.4941H13.8167V21.4289H18.2388V17.5685C18.2388 13.1769 20.839 10.751 24.8171 10.751C26.7228 10.751 28.7157 11.0933 28.7157 11.0933V15.4055H26.5197C24.3563 15.4055 23.6814 16.7563 23.6814 18.1421V21.4289H28.5116L27.7395 26.4941H23.6814V38.7388C32.0076 37.4242 38.3763 30.1752 38.3763 21.4289Z" fill="white"/>
+                        </svg>
+                    </a>
+                    <a href="" INSTAGRAM>
+                        <svg width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M28.6251 5.64746H14.6921C9.88272 5.64746 5.98395 9.54623 5.98395 14.3556V28.2886C5.98395 33.0979 9.88272 36.9967 14.6921 36.9967H28.6251C33.4344 36.9967 37.3332 33.0979 37.3332 28.2886V14.3556C37.3332 9.54623 33.4344 5.64746 28.6251 5.64746ZM34.2854 28.2886C34.2758 31.4106 31.7471 33.9393 28.6251 33.9489H14.6921C11.57 33.9393 9.04135 31.4106 9.03179 28.2886V14.3556C9.04135 11.2335 11.57 8.70487 14.6921 8.69531H28.6251C31.7471 8.70487 34.2758 11.2335 34.2854 14.3556V28.2886ZM29.9313 14.791C30.8932 14.791 31.6729 14.0112 31.6729 13.0494C31.6729 12.0875 30.8932 11.3077 29.9313 11.3077C28.9694 11.3077 28.1897 12.0875 28.1897 13.0494C28.1897 14.0112 28.9694 14.791 29.9313 14.791ZM21.6586 13.4848C17.3302 13.4848 13.8213 16.9937 13.8213 21.3221C13.8213 25.6506 17.3302 29.1594 21.6586 29.1594C25.987 29.1594 29.4959 25.6506 29.4959 21.3221C29.5006 19.2421 28.6763 17.2459 27.2055 15.7752C25.7347 14.3044 23.7386 13.4801 21.6586 13.4848ZM16.8691 21.3221C16.8691 23.9673 19.0134 26.1116 21.6586 26.1116C24.3038 26.1116 26.4481 23.9673 26.4481 21.3221C26.4481 18.6769 24.3038 16.5326 21.6586 16.5326C19.0134 16.5326 16.8691 18.6769 16.8691 21.3221Z" fill="white"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="mobile-menu-open" class="mobile-menu-open" :class="{ 'hidden': isMenuOpen, '': !isMenuOpen }" @click="isMenuOpen = true" aria-label="Open Mobile Menu">
+        <svg width="79" height="92" viewBox="0 0 79 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#filter0_dddd_3737_22498)">
+            <rect width="58" height="54" transform="translate(10.5303 2)" fill="#D12127"/>
+            <path d="M30.5303 29H48.5303M30.5303 23H48.5303M30.5303 35H48.5303" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+            <filter id="filter0_dddd_3737_22498" x="0.530273" y="0" width="78" height="92" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="2"/>
+            <feGaussianBlur stdDeviation="2"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_3737_22498"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="6"/>
+            <feGaussianBlur stdDeviation="3"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0"/>
+            <feBlend mode="normal" in2="effect1_dropShadow_3737_22498" result="effect2_dropShadow_3737_22498"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="14"/>
+            <feGaussianBlur stdDeviation="4.5"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
+            <feBlend mode="normal" in2="effect2_dropShadow_3737_22498" result="effect3_dropShadow_3737_22498"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="26"/>
+            <feGaussianBlur stdDeviation="5"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.01 0"/>
+            <feBlend mode="normal" in2="effect3_dropShadow_3737_22498" result="effect4_dropShadow_3737_22498"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="effect4_dropShadow_3737_22498" result="shape"/>
+            </filter>
+            </defs>
+        </svg>
+    </div>
+    <div id="mobile-menu-close" class="mobile-menu-close" :class="{ 'visible': isMenuOpen, 'hidden': !isMenuOpen }" @click="isMenuOpen = false" aria-label="Close Mobile Menu">
+        <svg width="55" height="55" viewBox="0 0 33 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6.2146" y="0.147461" width="32.0001" height="2.9253" transform="rotate(45 6.2146 0.147461)" fill="white"/>
+            <rect x="4.146" y="22.7744" width="32.0001" height="2.9253" transform="rotate(-45 4.146 22.7744)" fill="white"/>
+        </svg>
+    </div>
+</header>

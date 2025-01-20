@@ -1,0 +1,377 @@
+{{ define "main" }}
+
+  {{ $url := "https://inside.chandler-roofing.com/wp-json/pages/all/home" }}
+  {{ $data := getJSON $url }}
+
+  {{ $commercialProjects := slice }}
+  {{ $residentialProjects := slice }}
+
+  {{ range where site.Pages "Type" "projects" }}
+      {{ $categories := .Params.categories }}
+
+      <!-- Check if the project is Commercial -->
+      {{ if in $categories "Commercial" }}
+          {{ $commercialProjects = $commercialProjects | append . }}
+      {{ end }}
+
+      <!-- Check if the project is Residential -->
+      {{ if in $categories "Residential" }}
+          {{ $residentialProjects = $residentialProjects | append . }}
+      {{ end }}
+  {{ end }}
+
+  {{ if $data }}
+    {{ with $data }}
+
+      {{ partial "global/head.html" (dict "seo" .acf.seo) }}
+      {{ partial "global/header.html" (dict "seo" .acf.seo "logos" (index .site_data "Logos") "menus" .menus ) }}
+
+      <main id="main-content" role="main">
+        <div class="home-wrapper">
+
+            <div class="hero">
+                <video playsInline autoPlay muted loop>
+                    <source src="{{ .acf.hero_section.background_video.url }}" poster="https://inside.chandler-roofing.com/wp-content/uploads/2024/03/Image-1.jpg" type="video/mp4" />
+                    Your browser does not support the video tag. I suggest you upgrade your browser.
+                </video>
+                <div class="overlay-dark"></div>
+                <div class="content">
+                    <h1>{{ .acf.hero_section.title }}</h1>
+                    <p>{{ .acf.hero_section.paragraph }}</p>
+                    <div class="buttons">
+                        <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.hero_section.filled_button ) | safeURL }}">
+                        {{ .acf.hero_section.filled_button.text }}
+                        </a>
+                        <a class="white-outline-button" href="{{ partial "global/button_link.html" (dict "button" .acf.hero_section.outline_button ) | safeURL }}">
+                        {{ .acf.hero_section.outline_button.text }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div x-data="{ postHeadSection: 'div1' }" class="service-types">
+                <div class="toggle">
+                    <!-- Button 1 for Residential Services -->
+                    <button
+                        :class="postHeadSection === 'div1' ? 'active-service-trigger' : 'service-trigger'"
+                        @click="postHeadSection = 'div1'"
+                    >
+                        <div class="gradient-1"></div>
+                        <div class="gradient-2"></div>
+                        <div class="text">Residential Services</div>
+                    </button>
+                    <!-- Button 2 for Commercial Services -->
+                    <button
+                        :class="postHeadSection === 'div2' ? 'active-service-trigger' : 'service-trigger'"
+                        @click="postHeadSection = 'div2'"
+                    >
+                        <div class="gradient-3"></div>
+                        <div class="gradient-4"></div>
+                        <div class="text">Commercial Services</div>
+                    </button>
+                </div>
+                
+                <div class="service-information">
+                    <!-- Residential Services Section -->
+                    <div
+                        :class="postHeadSection === 'div1' ? 'active-service-info' : 'service-info'"
+                    >
+                        <div class="content">
+                            <h2>{{ .acf.residential_services.title }}</h2>
+                            <p>{{ .acf.residential_services.paragraph }}</p>
+                            <div class="buttons">
+                                <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.residential_services.filled_button ) | safeURL }}">{{ .acf.residential_services.filled_button.text }}</a>
+                                <a class="text-button" href="{{ partial "global/button_link.html" (dict "button" .acf.residential_services.text_button ) | safeURL }}">{{ .acf.residential_services.text_button.text }}</a>
+                            </div>
+                        </div>
+                        <div class="image">
+                            <img src="{{ .acf.residential_services.image.url }}" alt="{{ .acf.residential_services.image.alt }}" />
+                        </div>
+                    </div>
+            
+                    <!-- Commercial Services Section -->
+                    <div
+                        :class="postHeadSection === 'div2' ? 'active-service-info' : 'service-info'"
+                    >
+                        <div class="content">
+                            <h2>{{ .acf.commercial_services.title }}</h2>
+                            <p>{{ .acf.commercial_services.paragraph }}</p>
+                            <div class="buttons">
+                            <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.commercial_services.filled_button ) | safeURL }}">{{ .acf.commercial_services.filled_button.text }}</a>
+                            <a class="text-button" href="{{ partial "global/button_link.html" (dict "button" .acf.commercial_services.text_button ) | safeURL }}">{{ .acf.commercial_services.text_button.text }}</a>
+                            </div>
+                        </div>
+                        <div class="image">
+                        <img src="{{ .acf.commercial_services.image.url }}" alt="{{ .acf.commercial_services.image.alt }}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-data="{ projectFilterBox: false, projectFilter: 'div1' }" class="project-showcase">
+                <div class="title-section">
+                    <h2>{{ .acf.our_projects.title }}</h2>
+                    <img class="filter-icon" src="https://inside.chandler-roofing.com/wp-content/uploads/2024/03/filter.svg" width="25px" height="25px" />
+            
+                    <!-- Filter Wrapper -->
+                    <div class="filter-wrapper">
+                        <div class="filter-box">
+                            <p>Filter By:</p>
+                            <!-- Toggle Project Filter Box -->
+
+                            <!-- Filter Residential Projects -->
+                            <button @click="projectFilter = 'div1'"
+                                class="filter-button" 
+                                :class="projectFilter === 'div1' ? 'active-filter-button' : ''">
+                                <span>Residential</span>
+                            </button>
+
+                            <!-- Filter Commercial Projects -->
+                            <button @click="projectFilter = 'div2'"
+                                class="filter-button" 
+                                :class="projectFilter === 'div2' ? 'active-filter-button' : ''">
+                                <span>Commercial</span>
+                            </button>
+                        </div>
+            
+                        <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.our_projects.button ) | safeURL }}">
+                            {{ .acf.our_projects.button.text }}
+                        </a>
+                    </div>
+                </div>
+        
+                <!-- Desktop Projects Section -->
+                <div class="desktop-projects">
+                    <!-- Residential Projects (Filtered) -->
+                    <template x-if="projectFilter === 'div1'">
+                        <div class="projects-group">
+                            {{ range $index, $item := $residentialProjects }}
+                                {{ if eq $index 0 }}
+                                    <a href="{{ .Permalink }}" class="highlight project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                                {{ if eq $index 1 }}
+                                    <a href="{{ .Permalink }}" class="highlight-secondary project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                                {{ if eq $index 2 }}
+                                    <a href="{{ .Permalink }}" class="highlight-third project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                            {{ end }}
+                        </div>
+                    </template>
+
+                    <!-- Commercial Projects (Filtered) -->
+                    <template x-if="projectFilter === 'div2'">
+                        <div class="projects-group">
+                            {{ range $index, $item := $commercialProjects }}
+                                {{ if eq $index 0 }}
+                                    <a href="{{ .Permalink }}" class="highlight project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                                {{ if eq $index 1 }}
+                                    <a href="{{ .Permalink }}" class="highlight-secondary project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                                {{ if eq $index 2 }}
+                                    <a href="{{ .Permalink }}" class="highlight-third project-box">
+                                        <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                        <div class="hover">
+                                            {{ range first 1 .Params.acf.images }}
+                                                <img src="{{ .url }}" alt="{{ .alt }}" />
+                                            {{ end }}
+                                            <div class="overlay"></div>
+                                            <div class="title">
+                                                <h2>{{ .Params.acf.hero.title }}</h2>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{ end }}
+                            {{ end }}
+                        </div>
+                    </template>
+                </div>
+        
+                <!-- Mobile Projects Section -->
+                <div class="mobile-projects">
+                    <template x-if="projectFilter === 'div1'">
+                        <section
+                            x-data="{
+                                init() {
+                                    new Splide(this.$refs.splide, {
+                                        type: 'slide',
+                                        perPage: 1,
+                                        arrows: false,
+                                        pagination: false,
+                                        rewind: false,
+                                        noDrag: true,
+                                        keyboard: 'global',
+                                        padding: '30px',
+                                        gap: '10px',
+                                        breakpoints: {
+                                            416: {},
+                                            516: {},
+                                            768: {}
+                                        }
+                                    }).mount()
+                                },
+                            }"
+                            x-ref="splide"
+                            class="splide"
+                            aria-label="Splide/Alpine.js Carousel Example"
+                        >
+                            <div class="splide__track">
+                                <ul class="splide__list">
+                                    {{ range $index, $item := $residentialProjects }}
+                                        <li class="splide__slide">
+                                            <a href="{{ .Permalink }}" class="box">
+                                                <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                                <div class="hover">
+                                                    {{ range first 1 .Params.acf.images }}
+                                                        <img src="{{ .url }}" alt="{{ .alt }}" />
+                                                    {{ end }}
+                                                    <div class="overlay"></div>
+                                                    <div class="title">
+                                                        <h2>{{ .Params.acf.hero.title }}</h2>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {{ end }}
+                                </ul>
+                            </div>
+                        </section>
+                    </template>
+                
+                    <template x-if="projectFilter === 'div2'">
+                        <section
+                            x-data="{
+                                init() {
+                                    new Splide(this.$refs.splide, {
+                                        type: 'slide',
+                                        perPage: 1,
+                                        arrows: false,
+                                        pagination: false,
+                                        rewind: false,
+                                        noDrag: true,
+                                        keyboard: 'global',
+                                        padding: '30px',
+                                        gap: '10px',
+                                        breakpoints: {
+                                            416: {},
+                                            516: {},
+                                            768: {}
+                                        }
+                                    }).mount()
+                                },
+                            }"
+                            x-ref="splide"
+                            class="splide"
+                            aria-label="Splide/Alpine.js Carousel Example"
+                        >
+                            <div class="splide__track">
+                                <ul class="splide__list">
+                                    {{ range $index, $item := $commercialProjects }}
+                                        <li class="splide__slide">
+                                            <a href="{{ .Permalink }}" class="box">
+                                                <img src="{{ .Params.acf.hero.image.url }}" alt="{{ .Params.acf.hero.image.alt }}" class="primary-img" />
+                                                <div class="hover">
+                                                    {{ range first 1 .Params.acf.images }}
+                                                        <img src="{{ .url }}" alt="{{ .alt }}" />
+                                                    {{ end }}
+                                                    <div class="overlay"></div>
+                                                    <div class="title">
+                                                        <h2>{{ .Params.acf.hero.title }}</h2>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {{ end }}
+                                </ul>
+                            </div>
+                        </section>
+                    </template>
+                    <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .acf.our_projects.button ) | safeURL }}">
+                        {{ .acf.our_projects.button.text }}
+                    </a>
+                </div>            
+            </div>
+      
+            {{ partial "global/testimonialSection.html" (dict "testimonials" (index .global_sections "Testimonials Slider"))  }}
+
+            {{ partial "global/certificationSection.html" (dict "certifications" (index .global_sections "Certificates and Licenses"))  }}
+
+            {{ partial "global/serviceAreaSection.html" (dict "section_data" (index .global_sections "Service Area Section") "serviceAreas" (where site.Pages "Type" "service-areas") ) }}
+
+            <div class="commitment-section">
+                <div class="wrapper">
+                    <h6>{{ .acf.commitment_to_you.transparent_title }}</h6>
+                    <div class="content">
+                        <h5>{{ .acf.commitment_to_you.title }}</h5>
+                        <p>{{ .acf.commitment_to_you.paragraph }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {{ partial "global/preFooter.html" (dict "secData" (index .global_sections "Prefooter"))  }}
+      
+        </main>
+
+    {{ partial "global/footer.html" (dict "logos" (index .site_data "Logos") "addresses" (index .site_data "Physical Addresses") "phones" (index .site_data "Contact Numbers") "emails" (index .site_data "Emails") "socials" (index .site_data "Social Media Links") "menus" .menus)  }}
+      
+    {{ end }}
+  {{ else }}
+      <p>No data found.</p>
+  {{ end }}
+{{ end }}

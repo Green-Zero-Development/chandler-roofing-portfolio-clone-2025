@@ -1,0 +1,23 @@
+<div class="service-area-section">
+    <div class="wrapper">
+        <img src="{{ .section_data.acf.background_image.url }}" alt="{{ .section_data.acf.background_image.alt }}" class="background-image" />
+        <div class="overlay-dark-alt"></div>
+        <div class="content">
+            <h4>{{ .section_data.acf.title }}</h4>
+            <a class="filled-button" href="{{ partial "global/button_link.html" (dict "button" .section_data.acf.filled_button ) | safeURL }}">{{ .section_data.acf.filled_button.text }}</a>
+            <a class="text-button" href="{{ partial "global/button_link.html" (dict "button" .section_data.acf.text_button ) | safeURL }}">{{ .section_data.acf.text_button.text }}</a>
+        </div>
+        <ul x-data="{ hoverServiceArea: null }" class="list">
+            {{ range $index, $item := .serviceAreas }}
+                <li>
+                    <a href="{{ .Permalink }}"
+                        @mouseenter="hoverServiceArea = {{ $index }}"
+                        @mouseleave="hoverServiceArea = null">
+                        <div :class="hoverServiceArea === {{ $index }} ? 'active' : 'not-active'"></div>
+                        {{ .Params.title | replaceRE "County" "" }}
+                    </a>
+                </li>
+            {{ end }}
+        </ul>
+    </div>
+</div>

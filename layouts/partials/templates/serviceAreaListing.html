@@ -1,0 +1,44 @@
+<main id="main-content" role="main" class="service-area-listing-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.hero.subtitle }}</h4>
+            <h1>{{ .acf.hero.title }}</h1>
+            <p>{{ .acf.hero.paragraph }}</p>
+        </div>
+    </div>
+
+    {{ partial "global/serviceAreaSection.html" (dict "section_data" (index .global_sections "Service Area Section") "serviceAreas" (where site.Pages "Type" "service-areas") ) }}
+
+    <div class="commitment-section">
+        <div class="wrapper">
+            <h6>{{ .acf.commitment_to_you.transparent_title }}</h6>
+            <div class="content">
+                <h5>{{ .acf.commitment_to_you.title }}</h5>
+                <p>{{ .acf.commitment_to_you.paragraph }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="why-us">
+        <div class="wrapper">
+            <div class="image">
+                <img src="{{ .acf.why_us.image.url }}" alt="{{ .acf.why_us.image.alt }}" />
+            </div>
+            <div class="content">
+                <h2>{{ .acf.why_us.title }}</h2>
+                <ul>
+                    {{ range $index, $item := .acf.why_us.info_box }}
+                        <li>
+                            <div className="li-content">
+                                <h4>{{ .title }}</h4>
+                                <p>{{ .paragraph }}</p>
+                            </div>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</main>

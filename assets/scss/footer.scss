@@ -1,0 +1,160 @@
+@import "_variables";
+
+footer {
+    position: relative;
+    z-index: 1;
+
+    .footer-section {
+        position: relative;
+        background-color: #161616;
+        color: #FFFFFF;
+        padding: 200px 16px 100px 16px;
+        z-index: 1;
+        .wrapper {
+            max-width: 1258px;
+            margin: 0 auto;
+            @media (min-width: 768px) {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            @media (min-width: 1200px) {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            address {
+                font-style: normal;
+                font-weight: 700;
+                line-height: 1.5;
+                margin-top: 32px;
+                margin-bottom: 50px;
+                @media (min-width: 1200px) {
+                    margin-bottom: 0px;
+                }
+            }
+            h6 {
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                padding-bottom: 8px;
+            }
+            li {
+                font-size: 16px;
+                a {
+                    width: 100%;
+                    &:hover {
+                        color: #D12127;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .footer-service-areas {
+                grid-column: 2 / 4;
+                ul {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    list-style: none;
+                    padding: 0;
+                    margin-bottom: 50px;
+                    @media (min-width: 516px) {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+                    @media (min-width: 1200px) {
+                        margin-bottom: 0px;
+                    }
+                    li {
+                        margin-bottom: 4px;
+                    }
+                }
+            }
+            .first-menu {
+                margin-bottom: 50px;
+                @media (min-width: 1200px) {
+                    margin-bottom: 0px;
+                }
+            }
+            .dropdown {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                a {
+                    font-size: 16px;
+                    margin-bottom: 4px;
+                    &:hover {
+                        color: #D12127;
+                        text-decoration: underline;
+                    }
+                }
+                li {
+                    padding-bottom: 4px;
+                }
+            }
+            .contact-section {
+                display: flex;
+                flex-wrap: wrap;
+                a {
+                    width: 100%;
+                    font-size: 16px;
+                    margin-bottom: 4px;
+                    &:hover {
+                        color: #D12127;
+                        text-decoration: underline;
+                        svg {
+                            fill: #D12127;
+                            transition: fill 0.3s;
+                        }
+                    }
+                }
+                .social {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding-top: 8px;
+                    svg {
+                        fill: #ffffff;
+                        transition: fill 0.3s;
+                    }
+                }
+            }
+        }
+    }
+
+    .post-footer {
+        background-color: #323232;
+        .wrapper {
+            max-width: 1258px;
+            margin: 0 auto;
+            padding: 16px 8px 200px 8px;
+            font-size: 12px;
+            @media (min-width: 992px) {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                padding: 16px 8px 16px 8px;
+            }
+            .text {
+                color: #FFFFFF;
+                text-align: center;
+                padding: 15px 0 50px 0;
+                @media (min-width: 992px) {
+                    text-align: left;
+                    padding: 0;
+                }
+            }
+            .links {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                @media (min-width: 992px) {
+                    justify-content: flex-end;
+                }
+                li {
+                    margin-left: 16px;
+                    a {
+                        color: #FFFFFF;
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

@@ -1,0 +1,31 @@
+{{ define "main" }}
+
+  {{ $url := "https://inside.chandler-roofing.com/wp-json/pages/all/404-2" }}
+  {{ $data := getJSON $url }}
+
+  {{ if $data }}
+    {{ with $data }}
+
+      {{ partial "global/head.html" (dict "seo" .acf.seo) }}
+      {{ partial "global/header.html" (dict "seo" .acf.seo "logos" (index .site_data "Logos") "menus" .menus ) }}
+
+      <div class="four-o-four-content">
+          <div class="four-o-four-wrapper">
+          <h1 class="four-o-four-title">{{ .acf.hero_section.title }}</h1>
+          <p class="four-o-four-paragraph">{{ .acf.hero_section.description }}</p>
+          <a href="{{ partial "global/button_link.html" (dict "button" .acf.hero_section.button ) | safeURL }}" class="four-o-four-button filled-button">
+              <div>{{ .acf.hero_section.button.text }}</div>
+          </a>
+          </div>
+      </div>
+
+      {{ partial "global/preFooter.html" (dict "secData" (index .global_sections "Prefooter"))  }}
+
+    {{ partial "global/footer.html" (dict "logos" (index .site_data "Logos") "menus" .menus)  }}
+      
+    {{ end }}
+  {{ else }}
+      <p>No data found.</p>
+  {{ end }}
+
+{{ end }}

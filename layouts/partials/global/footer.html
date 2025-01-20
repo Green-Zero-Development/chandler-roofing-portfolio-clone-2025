@@ -1,0 +1,99 @@
+<footer class="">
+    <div class="footer-section">
+        <div class="wrapper">
+            <div class="logo-section">
+                <a href="/">
+                    <img src="{{ .logos.acf.footer_logo.url }}" alt="{{ .logos.acf.footer_logo.alt }}" />
+                </a>
+                <address>
+                    {{ range $index, $item := .addresses.acf.value_list }}
+                      {{ .street }}
+                      <br />
+                      {{ .city }}, {{ .state }} {{ .zip }}
+                    {{ end }}
+                </address>
+            </div>
+            <div class="footer-service-areas">
+                <h6>Service Areas</h6>
+                <ul>
+                    {{ range $index, $item := where site.Pages "Type" "service-areas" }}
+                        <li>
+                            <a href="/service-areas/{{ .Params.slug }}">
+                                {{ .Params.title | replaceRE "County" "" }}
+                            </a>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+            <ul class="first-menu">
+                {{ range .menus }}
+                    {{ if eq .menu "footer-menu" }}
+                        {{ if .children }}
+                            <div>
+                                <h6 id="dropdown-trigger" class="footer-title dropdown-trigger">{{ .title }}</h6>
+                                <div id="dropdown" class="dropdown">
+                                  {{ $sortedChildMenus := sort .children ".position" }}
+                                  {{ range $sortedChildMenus }}
+                                      <li>
+                                          <a href="{{ .url }}">{{ .title }}</a>
+                                      </li>
+                                  {{ end }}
+                                </div>
+                            </div>
+                        {{ else }}
+                            <li class="standalone-li">
+                                <a href="{{ .url }}">{{ .title }}</a>
+                            </li>
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+            </ul>
+            <div class="contact-section">
+                <h6>Contact Us</h6>
+                <a href="tel:{{ range $index, $item := .phones.acf.value_list }}{{ .value }}{{ end }}">
+                  {{ range $index, $item := .phones.acf.value_list }}
+                    {{ .value }}
+                  {{ end }}
+                </a>
+                <a href="mailto:{{ range $index, $item := .emails.acf.value_list }}{{ .value }}{{ end }}">Email Us</a>
+                <a href="/contact">Schedule an Estimate</a>
+                <div class="social">
+                    
+                    <a href="{{ with .socials.acf.value_list }}{{ range first 1 . }}{{ .value }}{{ end }}{{ end }}">
+                        <svg width="32" height="32" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38.3763 21.4289C38.3763 11.7514 30.5789 3.90625 20.9601 3.90625C11.3413 3.90625 3.54382 11.7514 3.54382 21.4289C3.54382 30.1748 9.91267 37.4242 18.2388 38.7388V26.4941H13.8167V21.4289H18.2388V17.5685C18.2388 13.1769 20.839 10.751 24.8171 10.751C26.7228 10.751 28.7157 11.0933 28.7157 11.0933V15.4055H26.5197C24.3563 15.4055 23.6814 16.7563 23.6814 18.1421V21.4289H28.5116L27.7395 26.4941H23.6814V38.7388C32.0076 37.4242 38.3763 30.1752 38.3763 21.4289Z"/>
+                        </svg>
+                    </a>
+                    <a href="{{ with .socials.acf.value_list }}{{ range after 1 . }}{{ .value }}{{ end }}{{ end }}">
+                        <svg width="33" height="32" viewBox="0 0 43 42" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M28.6251 5.64746H14.6921C9.88272 5.64746 5.98395 9.54623 5.98395 14.3556V28.2886C5.98395 33.0979 9.88272 36.9967 14.6921 36.9967H28.6251C33.4344 36.9967 37.3332 33.0979 37.3332 28.2886V14.3556C37.3332 9.54623 33.4344 5.64746 28.6251 5.64746ZM34.2854 28.2886C34.2758 31.4106 31.7471 33.9393 28.6251 33.9489H14.6921C11.57 33.9393 9.04135 31.4106 9.03179 28.2886V14.3556C9.04135 11.2335 11.57 8.70487 14.6921 8.69531H28.6251C31.7471 8.70487 34.2758 11.2335 34.2854 14.3556V28.2886ZM29.9313 14.791C30.8932 14.791 31.6729 14.0112 31.6729 13.0494C31.6729 12.0875 30.8932 11.3077 29.9313 11.3077C28.9694 11.3077 28.1897 12.0875 28.1897 13.0494C28.1897 14.0112 28.9694 14.791 29.9313 14.791ZM21.6586 13.4848C17.3302 13.4848 13.8213 16.9937 13.8213 21.3221C13.8213 25.6506 17.3302 29.1594 21.6586 29.1594C25.987 29.1594 29.4959 25.6506 29.4959 21.3221C29.5006 19.2421 28.6763 17.2459 27.2055 15.7752C25.7347 14.3044 23.7386 13.4801 21.6586 13.4848ZM16.8691 21.3221C16.8691 23.9673 19.0134 26.1116 21.6586 26.1116C24.3038 26.1116 26.4481 23.9673 26.4481 21.3221C26.4481 18.6769 24.3038 16.5326 21.6586 16.5326C19.0134 16.5326 16.8691 18.6769 16.8691 21.3221Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="post-footer">
+        <div class="wrapper">
+            <div class="text">
+                © {{ time.Now | time.Format "January 2, 2006" }} Chandler Roofing, All Rights Reserved
+            </div>
+            <ul class="links">
+                <li>
+                    <a href="/privacy">
+                        Privacy Policy
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    // gsap.to(".box", { rotation: 27, x: 100, duration: 1 });
+});
+
+</script>

@@ -1,0 +1,135 @@
+<!-- #region Data -->
+
+{{ $allBlogs := slice }}
+{{ $commercialBlogs := slice }}
+{{ $residentialBlogs := slice }}
+
+{{ range where site.Pages "Type" "blog" }}
+
+    {{ $categories := .Params.categories }}
+
+    {{ $allBlogs = $allBlogs | append .Params }}
+
+    <!-- Check if the project is Commercial -->
+    {{ if in $categories "Commercial" }}
+        {{ $commercialBlogs = $commercialBlogs | append .Params }}
+    {{ end }}
+
+    <!-- Check if the project is Residential -->
+    {{ if in $categories "Residential" }}
+        {{ $residentialBlogs = $residentialBlogs | append .Params }}
+    {{ end }}
+{{ end }}
+
+<!-- #endregion -->
+
+<main id="main-content" role="main" class="project-listing-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.hero_section.pretitle }}</h4>
+            <h1>{{ .acf.hero_section.title }}</h1>
+            <p>{{ .acf.hero_section.paragraph }}</p>
+        </div>
+    </div>
+
+    <div 
+        x-data="{
+            projectFilter: 'all', 
+            currentPage: 1, 
+            itemsPerPage: 6, 
+            allBlogs: {{ $allBlogs | jsonify }},
+            residentialBlogs: {{ $residentialBlogs | jsonify }},
+            commercialBlogs: {{ $commercialBlogs | jsonify }},
+            get paginatedBlogs() {
+                const blogs = this.filteredBlogs;
+                const start = (this.currentPage - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                return blogs.slice(start, end);
+            },
+            get totalPages() {
+                return Math.ceil(this.filteredBlogs.length / this.itemsPerPage);
+            },
+            get filteredBlogs() {
+                if (this.projectFilter === 'div1') return this.residentialBlogs;
+                if (this.projectFilter === 'div2') return this.commercialBlogs;
+                return this.allBlogs;
+            }
+        }"
+        class="project-showcase"
+    >
+        <div class="title-section">
+    
+            <!-- Filter Wrapper -->
+            <div class="filter-wrapper">
+                <div class="filter-box">
+    
+                    <button @click="projectFilter = 'div1'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'div1' ? 'active-filter-button' : ''">
+                        <span>Residential</span>
+                    </button>
+    
+                    <button @click="projectFilter = 'div2'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'div2' ? 'active-filter-button' : ''">
+                        <span>Commercial</span>
+                    </button>
+    
+                    <button @click="projectFilter = 'all'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'all' ? 'active-filter-button' : ''">
+                        <span>View All</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Desktop Projects Section -->
+        <div class="desktop-projects">
+            <div class="projects-group">
+                <template x-for="blog in paginatedBlogs" :key="blog.acf.seo.meta_title">
+                    <a :href="'/blog/' + blog.slug" class="project-box">
+
+                        <img :src="blog.acf.featured_image.url" :alt="blog.acf.featured_image.alt" />
+                
+                        <h2 x-text="blog.title"></h2>
+
+                        <div class="text-button">
+                            View Full Project
+                        </div>
+
+                    </a>
+                </template>
+                
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            <button 
+                @click="
+                    currentPage = Math.max(1, currentPage - 1); 
+                    $nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                "
+                :disabled="currentPage === 1"
+            >
+                Previous
+            </button>
+            
+            <span x-text="`Page ${currentPage} of ${totalPages}`"></span>
+            
+            <button
+                @click="
+                    currentPage = Math.min(totalPages, currentPage + 1); 
+                    $nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                "
+                :disabled="currentPage === totalPages"
+            >
+                Next
+            </button>
+        </div>
+    </div>
+
+</main>
+

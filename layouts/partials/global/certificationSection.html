@@ -1,0 +1,7 @@
+<div class="certification-section">
+    {{ range $index, $item := .certifications.acf.badge }}
+        <div class="badge">
+            <img src="{{ .image.url }}" alt="{{ .image.alt }}" />
+        </div>
+    {{ end }}
+</div>

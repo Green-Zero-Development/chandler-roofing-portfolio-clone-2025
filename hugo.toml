@@ -1,0 +1,12 @@
+baseURL = 'https://www.chandler-roofing.com/'
+languageCode = 'en-us'
+title = 'Chandler Roofing'
+theme = 'site-theme'
+enableRobotsTXT = true
+disableKinds = ['taxonomy', 'rss']
+
+[sitemap]
+  changeFreq = ''
+  disable = false
+  filename = 'sitemap.xml'
+  priority = -1

@@ -1,0 +1,17 @@
+<main id="main-content" role="main" class="policy-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.hero.subtitle }}</h4>
+            <h1>{{ .acf.hero.title }}</h1>
+            <p>Updated on: {{ .acf.hero.updated_on }}</p>
+        </div>
+    </div>
+    
+    <div class="content-section">
+        <div class="html-content">
+            {{ .acf.policy_text | safeHTML }}
+        </div>
+    </div>
+
+</main>

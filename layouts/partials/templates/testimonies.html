@@ -1,0 +1,36 @@
+<main id="main-content" role="main" class="about-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.hero.subtitle }}</h4>
+            <h1>{{ .acf.hero.title }}</h1>
+            <p>{{ .acf.hero.paragraph }}</p>
+        </div>
+    </div>
+
+    <div class="why-us">
+        <div class="wrapper">
+            <div class="image">
+                <img src="{{ .acf.why_us.image.url }}" alt="{{ .acf.why_us.image.alt }}" />
+            </div>
+            <div class="content">
+                <h2>{{ .acf.why_us.title }}</h2>
+                <ul>
+                    {{ range $index, $item := .acf.why_us.info_box }}
+                        <li>
+                            <div class="li-content">
+                                <h4>{{ .title }}</h4>
+                                <p>{{ .paragraph }}</p>
+                            </div>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {{ partial "global/testimonialSection.html" (dict "testimonials" (index .global_sections "Testimonials Slider"))  }}
+
+    {{ partial "global/scheduleEstimateCta.html" (dict "section_data" (index .global_sections "Schedule Estimate CTA") "addresses" (index .site_data "Physical Addresses") "phones" (index .site_data "Contact Numbers") "emails" (index .site_data "Emails"))  }}
+
+</main>

@@ -1,0 +1,57 @@
+<div class="testimonial-slider">
+    <section 
+    x-data="{
+        init() {
+            new Splide(this.$refs.splideOne, {
+                type: 'loop',
+                perPage: 1,
+                pagination: true,
+                arrows: false,
+                keyboard: 'global',
+                autoplay: false,
+                padding: '30%',
+                gap: '50px',
+                start: 1,
+                breakpoints: {
+                    992: {
+                        padding: '0%',
+                        gap: '0px',
+                    }
+                }
+            }).mount()
+            },
+            updateCursor(event) {
+                const slide = event.currentTarget;
+                const slideRect = slide.getBoundingClientRect();
+                const middleX = slideRect.left + (slideRect.width / 2);
+
+                if (event.clientX < middleX) {
+                    slide.classList.add('cursor-left');
+                    slide.classList.remove('cursor-right');
+                } else {
+                    slide.classList.add('cursor-right');
+                    slide.classList.remove('cursor-left');
+                }
+            }
+        }"
+        class="splide"
+        x-ref="splideOne"  
+    >
+        <div class="splide__track">
+            <ul class="splide__list">
+                {{ range $index, $item := .testimonials.acf.testimonial }}
+                    <li 
+                    class="splide__slide"
+                    @mousemove="updateCursor($event)"
+                    >
+                        <div class="inner-slide-box">
+                            <p>&quot;{{ .text }}&quot;</p>
+                            <h5>{{ .name }}</h5>
+                            <h6>{{ .job_title }}</h6>
+                        </div>
+                    </li>
+                {{ end }}
+            </ul>
+        </div>
+    </section>
+</div>

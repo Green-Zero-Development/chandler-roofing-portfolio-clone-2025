@@ -1,0 +1,144 @@
+<!-- #region Data -->
+
+{{ $allProjects := slice }}
+{{ $commercialProjects := slice }}
+{{ $residentialProjects := slice }}
+
+{{ range where site.Pages "Type" "projects" }}
+    {{ $categories := .Params.categories }}
+
+    {{ $allProjects = $allProjects | append .Params }}
+
+    <!-- Check if the project is Commercial -->
+    {{ if in $categories "Commercial" }}
+        {{ $commercialProjects = $commercialProjects | append .Params }}
+    {{ end }}
+
+    <!-- Check if the project is Residential -->
+    {{ if in $categories "Residential" }}
+        {{ $residentialProjects = $residentialProjects | append .Params }}
+    {{ end }}
+{{ end }}
+
+<!-- #endregion -->
+
+<main id="main-content" role="main" class="project-listing-wrapper">
+
+    <div class="hero">
+        <div class="wrapper">
+            <h4 class="tag">{{ .acf.subtitle }}</h4>
+            <h1>{{ .acf.title }}</h1>
+        </div>
+    </div>
+
+    <div 
+        x-data="{
+            projectFilter: 'all', 
+            currentPage: 1, 
+            itemsPerPage: 6, 
+            allProjects: {{ $allProjects | jsonify }},
+            residentialProjects: {{ $residentialProjects | jsonify }},
+            commercialProjects: {{ $commercialProjects | jsonify }},
+            get paginatedProjects() {
+                const projects = this.filteredProjects;
+                const start = (this.currentPage - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                return projects.slice(start, end);
+            },
+            get totalPages() {
+                return Math.ceil(this.filteredProjects.length / this.itemsPerPage);
+            },
+            get filteredProjects() {
+                if (this.projectFilter === 'div1') return this.residentialProjects;
+                if (this.projectFilter === 'div2') return this.commercialProjects;
+                return this.allProjects;
+            }
+        }"
+        class="project-showcase"
+    >
+        <div class="title-section">
+    
+            <!-- Filter Wrapper -->
+            <div class="filter-wrapper">
+                <div class="filter-box">
+    
+                    <button @click="projectFilter = 'div1'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'div1' ? 'active-filter-button' : ''">
+                        <span>Residential</span>
+                    </button>
+    
+                    <button @click="projectFilter = 'div2'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'div2' ? 'active-filter-button' : ''">
+                        <span>Commercial</span>
+                    </button>
+    
+                    <button @click="projectFilter = 'all'; currentPage = 1"
+                        class="filter-button" 
+                        :class="projectFilter === 'all' ? 'active-filter-button' : ''">
+                        <span>View All</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Desktop Projects Section -->
+        <div class="desktop-projects">
+            <div class="projects-group">
+                <template x-for="project in paginatedProjects" :key="project.acf.hero.title">
+                    <a :href="'/projects/' + project.slug" class="project-box">
+
+                        <img :src="project.acf.hero.image.url" :alt="project.acf.hero.image.alt" />
+                
+                        <ul class="tags">
+                            <template x-for="(tag, index) in project.tags" :key="index">
+                                <li class="tag">
+                                    <span x-text="tag"></span>
+                                    <span x-show="index < project.tags.length - 1">,</span>
+                                </li>
+                            </template>
+                        </ul>
+                
+                        <h2 x-text="project.acf.hero.title"></h2>
+
+                        <p x-text="project.acf.listing_page_excerpt"></p>
+
+                        <div class="text-button">
+                            View Full Project
+                        </div>
+
+                    </a>
+                </template>
+                
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            <button 
+                @click="
+                    currentPage = Math.max(1, currentPage - 1); 
+                    $nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                "
+                :disabled="currentPage === 1"
+            >
+                Previous
+            </button>
+            
+            <span x-text="`Page ${currentPage} of ${totalPages}`"></span>
+            
+            <button
+                @click="
+                    currentPage = Math.min(totalPages, currentPage + 1); 
+                    $nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                "
+                :disabled="currentPage === totalPages"
+            >
+                Next
+            </button>
+        </div>
+    </div>
+
+</main>
+

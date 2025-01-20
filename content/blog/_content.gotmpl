@@ -1,0 +1,26 @@
+{{/* Get remote data. */}}
+{{ $data := dict }}
+{{ $url := "https://inside.chandler-roofing.com/wp-json/blog/all" }}
+{{ with resources.GetRemote $url }}
+  {{ with .Err }}
+    {{ errorf "Unable to get remote resource %s: %s" $url . }}
+  {{ else }}
+    {{ $data = . | transform.Unmarshal }}
+  {{ end }}
+{{ else }}
+  {{ errorf "Unable to get remote resource %s" $url }}
+{{ end }}
+
+{{ $globalSections := $data.global_sections }}
+{{ $siteData := $data.site_data }}
+{{ $menus := $data.menus }}
+
+{{ range $data.blogs }}
+    {{ $params := dict "template" .template "title" .title "categories" .categories "slug" .slug "acf" .acf "site_data" $siteData "global_sections" $globalSections "menus" $menus }}
+    {{ $page := dict
+      "type" "blog"
+      "path" .slug
+      "params" $params
+    }}
+    {{ $.AddPage $page }}
+{{ end }}
