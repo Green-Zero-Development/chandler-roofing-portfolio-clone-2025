@@ -1,1 +1,1 @@
-# hugo-boilerplate-2024
+# Developed by me using [Hugo (Frontend)](https://gohugo.io/) and [Wordpress (Backend)](https://wordpress.com/).
